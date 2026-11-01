@@ -32,7 +32,7 @@ export default function App() {
   // Print state
   const [printData, setPrintData] = useState(null);
 
-  // School config (persisted in localStorage)
+  // School config (persisted in Firestore and localStorage)
   const [schoolConfig, setSchoolConfig] = useState(() => {
     const saved = localStorage.getItem('mi_school_config');
     if (saved) {
@@ -51,13 +51,48 @@ export default function App() {
       email: 'info@mi-riyadusshibyan.sch.id',
       bendahara: 'Ustadzah Nurul Hidayah, S.Pd.I',
       kota: 'Bekasi',
-      logoUrl: 'https://images.unsplash.com/photo-1590076215667-873d328d49a7?auto=format&fit=crop&w=150&q=80'
+      logoUrl: ''
     };
   });
 
-  const handleUpdateSchoolConfig = (cfg) => {
+  // Listen to School Config from Firestore so it never resets across sessions/relogs/devices
+  useEffect(() => {
+    const configRef = doc(db, 'settings', 'schoolConfig');
+    const unsubscribe = onSnapshot(configRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const firestoreData = docSnap.data();
+        if (firestoreData && Object.keys(firestoreData).length > 0) {
+          setSchoolConfig(prev => {
+            const merged = { ...prev, ...firestoreData };
+            try {
+              localStorage.setItem('mi_school_config', JSON.stringify(merged));
+            } catch (e) {
+              // ignore quota
+            }
+            return merged;
+          });
+        }
+      }
+    }, (err) => {
+      console.warn("Firestore settings/schoolConfig sync:", err);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleUpdateSchoolConfig = async (cfg) => {
     setSchoolConfig(cfg);
-    localStorage.setItem('mi_school_config', JSON.stringify(cfg));
+    try {
+      localStorage.setItem('mi_school_config', JSON.stringify(cfg));
+    } catch (e) {
+      console.warn("localStorage quota exceeded:", e);
+    }
+    try {
+      const configRef = doc(db, 'settings', 'schoolConfig');
+      await setDoc(configRef, cfg, { merge: true });
+    } catch (err) {
+      console.error("Gagal menyimpan schoolConfig ke Firestore:", err);
+    }
   };
 
   // Listen to Firebase Auth state for Admin
@@ -289,6 +324,7 @@ export default function App() {
         onSeedDemoData={handleSeedDemoData}
         isSeeding={isSeeding}
         studentCount={students.length}
+        schoolConfig={schoolConfig}
       />
 
       {/* Main Content */}
@@ -297,6 +333,7 @@ export default function App() {
           <LoginModal
             onLoginSiswa={handleLoginSiswa}
             onLoginAdmin={handleLoginAdmin}
+            schoolConfig={schoolConfig}
           />
         )}
 

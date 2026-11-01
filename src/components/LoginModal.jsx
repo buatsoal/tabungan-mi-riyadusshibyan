@@ -4,7 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { UserCheck, Shield, KeyRound, AlertTriangle, Loader2, ArrowRight, Sparkles, Eye, EyeOff } from 'lucide-react';
 
-export default function LoginModal({ onLoginSiswa, onLoginAdmin }) {
+export default function LoginModal({ onLoginSiswa, onLoginAdmin, schoolConfig = {} }) {
   const [activeTab, setActiveTab] = useState('siswa'); // 'siswa' | 'admin'
 
   // Siswa Form
@@ -104,8 +104,16 @@ export default function LoginModal({ onLoginSiswa, onLoginAdmin }) {
       <div className="bg-white rounded-3xl max-w-md w-full shadow-xl border border-emerald-100 overflow-hidden">
         {/* Banner Madrasah */}
         <div className="bg-gradient-to-br from-emerald-700 via-emerald-800 to-teal-900 text-white p-6 text-center relative">
-          <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/20 flex items-center justify-center font-bold text-2xl shadow-inner">
-            <span className="text-emerald-200 font-serif">MI</span>
+          <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/20 flex items-center justify-center font-bold text-2xl shadow-inner overflow-hidden">
+            {schoolConfig?.logoUrl ? (
+              <img
+                src={schoolConfig.logoUrl}
+                alt="Logo MI"
+                className="w-full h-full object-contain p-1 bg-white/10"
+              />
+            ) : (
+              <span className="text-emerald-200 font-serif">MI</span>
+            )}
           </div>
           <h1 className="text-xl font-extrabold tracking-wide uppercase font-sans">
             TABUNGAN MI RIYADUSSHIBYAN

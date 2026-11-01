@@ -45,7 +45,17 @@ export function generateStudentPdf({
   const contentWidth = pageWidth - (margin * 2); // 182 mm
   let currentY = 14;
 
-  // 2. KOP SURAT RESMI MI RIYADUSSHIBYAN (TANPA AKREDITASI, PURE VECTOR TEXT)
+  // 2. KOP SURAT RESMI MI RIYADUSSHIBYAN (TANPA AKREDITASI, EMBED UPLOADED LOGO)
+  // Embed logo jika admin telah mengunggah file JPG/PNG logo madrasah
+  if (config.logoUrl && config.logoUrl.startsWith('data:image/')) {
+    try {
+      const format = config.logoUrl.includes('image/jpeg') || config.logoUrl.includes('image/jpg') ? 'JPEG' : 'PNG';
+      doc.addImage(config.logoUrl, format, margin + 2, 12, 19, 19);
+    } catch (imgErr) {
+      console.warn('Gagal menambahkan logo ke PDF:', imgErr);
+    }
+  }
+
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
   doc.setTextColor(80, 80, 80);

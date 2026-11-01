@@ -100,7 +100,7 @@ export default function StudentDashboard({ student, onLogout }) {
               <Sparkles className="w-4 h-4 text-amber-500 hidden sm:inline" />
             </div>
             <p className="text-xs text-gray-500">
-              Buku Rekening Tabungan Siswa MI Riyadusshibyan
+              Buku Rekening TABUNGAN MI RIYADUSSHIBYAN
             </p>
           </div>
         </div>

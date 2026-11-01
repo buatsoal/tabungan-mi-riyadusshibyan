@@ -6,7 +6,8 @@ export default function Navbar({
   onLogout,
   onSeedDemoData,
   isSeeding = false,
-  studentCount = 0
+  studentCount = 0,
+  schoolConfig = {}
 }) {
   return (
     <header className="no-print bg-white border-b border-emerald-100 sticky top-0 z-40 shadow-xs">
@@ -14,18 +15,21 @@ export default function Navbar({
         <div className="flex items-center justify-between h-16">
           {/* Logo & School Title */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-700 text-white flex items-center justify-center font-bold text-lg shadow-sm font-serif">
-              MI
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-700 text-white flex items-center justify-center font-bold text-lg shadow-sm font-serif overflow-hidden">
+              {schoolConfig?.logoUrl ? (
+                <img
+                  src={schoolConfig.logoUrl}
+                  alt="Logo MI Riyadusshibyan"
+                  className="w-full h-full object-contain bg-white p-0.5"
+                />
+              ) : (
+                <span>MI</span>
+              )}
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base sm:text-lg text-emerald-950 tracking-tight">
-                  Tabungan MI Riyadusshibyan
-                </span>
-                <span className="hidden md:inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md uppercase">
-                  Bekasi
-                </span>
-              </div>
+              <h1 className="font-extrabold text-base sm:text-lg text-emerald-950 tracking-tight uppercase font-sans">
+                TABUNGAN MI RIYADUSSHIBYAN
+              </h1>
               <p className="text-[11px] text-gray-500 hidden sm:block">
                 Amanah, Transparan, dan Barokah
               </p>
@@ -59,7 +63,7 @@ export default function Navbar({
                   <button
                     onClick={onSeedDemoData}
                     disabled={isSeeding}
-                    className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors"
+                    className="cursor-pointer px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors"
                     title="Buat data sampel siswa untuk uji coba langsung"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-amber-600" />
@@ -69,7 +73,7 @@ export default function Navbar({
 
                 <button
                   onClick={onLogout}
-                  className="px-3 py-1.5 border border-gray-300 hover:bg-red-50 hover:text-red-700 hover:border-red-200 text-gray-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                  className="cursor-pointer px-3 py-1.5 border border-gray-300 hover:bg-red-50 hover:text-red-700 hover:border-red-200 text-gray-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
                   title="Keluar dari sesi ini"
                 >
                   <LogOut className="w-3.5 h-3.5" />
